@@ -51,7 +51,7 @@ pip install capmonstercloudclient
 ```python
 import asyncio
 from capmonstercloudclient import CapMonsterClient, ClientOptions
-from capmonstercloudclient.requests import RecaptchaV2ProxylessRequest
+from capmonstercloudclient.requests import RecaptchaV2Request
 
 # Initialize client with your API key from dashboard
 options = ClientOptions(api_key="YOUR_CAPMONSTER_API_KEY")
@@ -59,7 +59,7 @@ client = CapMonsterClient(options=options)
 
 async def main():
     # Build the task payload
-    request = RecaptchaV2ProxylessRequest(
+    request = RecaptchaV2Request(
         websiteUrl="https://lessons.zennolab.com/captchas/recaptcha/v2_simple.php?level=high",
         websiteKey="6Lcg7CMUAAAAANphynKgn9YAgA4tQ2KI_iqRyTwd"
     )
@@ -78,14 +78,14 @@ if __name__ == "__main__":
 import asyncio
 from playwright.async_api import async_playwright
 from capmonstercloudclient import CapMonsterClient, ClientOptions
-from capmonstercloudclient.requests import TurnstileProxylessRequest
+from capmonstercloudclient.requests import TurnstileRequest
 
 options = ClientOptions(api_key="YOUR_CAPMONSTER_API_KEY")
 client = CapMonsterClient(options=options)
 
 async def run_scraper():
     # Solve Turnstile challenge via CapMonster Cloud
-    turnstile_req = TurnstileProxylessRequest(
+    turnstile_req = TurnstileRequest(
         websiteUrl="https://target-website.com/login",
         websiteKey="0x4AAAAAAABnPIDnK2k_e-2"
     )
@@ -114,8 +114,8 @@ All task types conform to the official [CapMonster Cloud API Documentation](http
 
 | Protection Type | Task Request Class | Proxyless Mode |
 | :--- | :--- | :---: |
-| **Cloudflare Turnstile** | `TurnstileProxylessRequest` / `TurnstileRequest` | ✅ Supported |
-| **reCAPTCHA v2** | `RecaptchaV2ProxylessRequest` / `RecaptchaV2Request` | ✅ Supported |
+| **Cloudflare Turnstile** | `TurnstileRequest` | ✅ Supported |
+| **reCAPTCHA v2** | `RecaptchaV2Request` | ✅ Supported |
 | **reCAPTCHA v3** | `RecaptchaV3ProxylessRequest` | ✅ Supported |
 | **reCAPTCHA Enterprise** | `RecaptchaV2EnterpriseProxylessRequest` / `RecaptchaV2EnterpriseRequest` | ✅ Supported |
 | **GeeTest (v3, v4)** | `GeeTestProxylessRequest` / `GeeTestRequest` | ✅ Supported |
