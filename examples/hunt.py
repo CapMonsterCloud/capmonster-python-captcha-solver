@@ -30,6 +30,9 @@ if __name__ == '__main__':
     )
     metadata = {
         "apiGetLib": "https://example.com/hd-api/external/apps/a2157wab1045d68672a63557e0n2a77edbfd15ea/api.js",
+        # Use "widgetUrl" (full Hunt CAPTCHA widget URL) as an alternative to "data"
+        # when it is available on the page. Do not pass both together.
+        # "widgetUrl": "https://captcha.example.com/widget?hash=<widget-hash>",
     }
     hunt_request = HuntCustomTaskRequest(
         websiteUrl='https://example.com',

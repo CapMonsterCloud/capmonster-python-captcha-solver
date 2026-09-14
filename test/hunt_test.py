@@ -9,6 +9,7 @@ class HuntCustomTaskRequestTest(unittest.TestCase):
     userAgentExample = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"
     apiGetLibExample = "https://example.com/hd-api/external/apps/a2157wab1045d68672a63557e0n2a77edbfd15ea/api.js"
     dataExample = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9"
+    widgetUrlExample = "https://captcha.example.com/widget?hash=abc123"
 
     def setUp(self):
         self.proxy = ProxyInfo(
@@ -82,6 +83,33 @@ class HuntCustomTaskRequestTest(unittest.TestCase):
         self.assertRaises(ValidationError, HuntCustomTaskRequest, **base_kwargs)
         base_kwargs.update({"metadata": metadata_example})
         HuntCustomTaskRequest(**base_kwargs)
+
+    def test_hunt_metadata_with_widget_url(self):
+        metadata_example = {
+            "apiGetLib": self.apiGetLibExample,
+            "widgetUrl": self.widgetUrlExample,
+        }
+        request = HuntCustomTaskRequest(
+            websiteUrl=self.websiteUrlExample,
+            metadata=metadata_example,
+            proxy=self.proxy,
+        )
+        task_dictionary = request.getTaskDict()
+        self.assertEqual(task_dictionary["metadata"]["widgetUrl"], self.widgetUrlExample)
+
+    def test_hunt_data_and_widget_url_mutually_exclusive(self):
+        metadata_example = {
+            "apiGetLib": self.apiGetLibExample,
+            "data": self.dataExample,
+            "widgetUrl": self.widgetUrlExample,
+        }
+        self.assertRaises(
+            TypeError,
+            HuntCustomTaskRequest,
+            websiteUrl=self.websiteUrlExample,
+            metadata=metadata_example,
+            proxy=self.proxy,
+        )
 
     def test_hunt_requires_proxy(self):
         metadata_example = {

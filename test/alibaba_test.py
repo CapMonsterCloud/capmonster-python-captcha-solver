@@ -9,6 +9,7 @@ class AlibabaCustomTaskRequestTest(unittest.TestCase):
     userAgentExample = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"
     sceneIdExample = "1ww7426c"
     prefixExample = "dlw3kug"
+    punishUrlExample = "https://example.com:443//api/example/testlogin/_____tmd_____/punish?x5secdata=xgf6888&x5step=2&action=captchaclick&pureCaptcha="
 
     def setUp(self):
         self.proxy = ProxyInfo(
@@ -111,6 +112,26 @@ class AlibabaCustomTaskRequestTest(unittest.TestCase):
         task_dictionary = request.getTaskDict()
         self.assertEqual(task_dictionary["proxyType"], self.proxy.proxyType)
         self.assertEqual(task_dictionary["userAgent"], self.userAgentExample)
+
+    def test_alibaba_punish_url_mode(self):
+        metadata_example = {
+            "punishUrl": self.punishUrlExample,
+        }
+        request = AlibabaCustomTaskRequest(
+            websiteUrl=self.websiteUrlExample,
+            metadata=metadata_example,
+        )
+        task_dictionary = request.getTaskDict()
+        self.assertEqual(task_dictionary["metadata"]["punishUrl"], self.punishUrlExample)
+        self.assertNotIn("sceneId", task_dictionary["metadata"])
+        self.assertNotIn("prefix", task_dictionary["metadata"])
+
+    def test_alibaba_punish_url_type(self):
+        base_kwargs = {
+            "websiteUrl": self.websiteUrlExample,
+            "metadata": {"punishUrl": 12345},
+        }
+        self.assertRaises(ValidationError, AlibabaCustomTaskRequest, **base_kwargs)
 
     def test_alibaba_proxy_not_required(self):
         metadata_example = {

@@ -10,26 +10,27 @@ class RecaptchaComplexImageTaskRequest(ComplexImageTaskRequestBase):
     image classification challenges.
 
     Attributes:
-        metadata: A dictionary describing the challenge. Must contain
-            "Task" (English task name, e.g. "Click on traffic lights") and
-            "TaskDefinition" (its technical identifier, e.g. "/m/015qff") —
-            both required together — along with "Grid" (e.g. "3x3", "4x4",
-            "1x1") specifying the image grid layout.
+        metadata: A dictionary describing the challenge. Must contain at
+            least one of "Task" (English task name, e.g. "Click on traffic
+            lights") or "TaskDefinition" (its technical identifier, e.g.
+            "/m/015qff") — each is required only if the other is not filled —
+            along with "Grid" (e.g. "3x3", "4x4", "1x1") specifying the image
+            grid layout.
         captchaClass: The constant string identifying the captcha family
             as "recaptcha".
         imagesUrls: A collection of image URLs to be recognized. Must be
             populated if imagesBase64 is not.
     """
 
-    metadata : Dict[str, str] = Field(..., description='Dictionary describing the challenge. Must contain "Task" and "TaskDefinition" (both required together) plus "Grid".')
+    metadata : Dict[str, str] = Field(..., description='Dictionary describing the challenge. Must contain at least one of "Task" or "TaskDefinition" (each required only if the other is not filled) plus "Grid".')
     captchaClass: str = Field(default='recaptcha', description='Constant string identifying the captcha family as "recaptcha".')
     imagesUrls: Optional[List[str]] = Field(default=None, description='Collection with image urls. Must be populated if imagesBase64 is not.')
 
     @field_validator('metadata')
     @classmethod
     def validate_metadata(cls, value):
-        if value.get('Task') is None or value.get('TaskDefinition') is None:
-            raise TaskNotDefinedError(f'"Task" and "TaskDefinition" must both be filled.')
+        if value.get('Task') is None and value.get('TaskDefinition') is None:
+            raise TaskNotDefinedError(f'At least one of "Task" or "TaskDefinition" must be filled.')
         elif value.get('Grid') is None:
             raise TaskNotDefinedError(f'"Grid" must be filled (3x3, 4x4, 1x1).')
         else:

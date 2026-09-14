@@ -134,6 +134,35 @@ class RecaptchaImageRequestTest(unittest.TestCase):
                 userAgent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36.",
             )
 
+    def testTaskOrTaskDefinitionAlone(self):
+        # "Task" alone (no "TaskDefinition") must be accepted.
+        request = RecaptchaComplexImageTaskRequest(
+            websiteUrl=RecaptchaImageRequestTest.websiteUrlExample,
+            metadata={"Task": "Click on traffic lights", "Grid": "3x3"},
+            imagesUrls=RecaptchaImageRequestTest.imageUrlsExamples,
+        )
+        task_dictionary = request.getTaskDict()
+        self.assertIn("Task", task_dictionary["metadata"])
+        self.assertNotIn("TaskDefinition", task_dictionary["metadata"])
+
+        # "TaskDefinition" alone (no "Task") must be accepted.
+        request = RecaptchaComplexImageTaskRequest(
+            websiteUrl=RecaptchaImageRequestTest.websiteUrlExample,
+            metadata={"TaskDefinition": "/m/015qff", "Grid": "3x3"},
+            imagesUrls=RecaptchaImageRequestTest.imageUrlsExamples,
+        )
+        task_dictionary = request.getTaskDict()
+        self.assertIn("TaskDefinition", task_dictionary["metadata"])
+        self.assertNotIn("Task", task_dictionary["metadata"])
+
+        # Neither "Task" nor "TaskDefinition" must still fail.
+        with self.assertRaises(TaskNotDefinedError):
+            RecaptchaComplexImageTaskRequest(
+                websiteUrl=RecaptchaImageRequestTest.websiteUrlExample,
+                metadata={"Grid": "3x3"},
+                imagesUrls=RecaptchaImageRequestTest.imageUrlsExamples,
+            )
+
     @unittest.skip("Doesnt work right now")
     def testUserAgentWithUrl(self):
         with self.assertRaises(UserAgentNotDefinedError):
