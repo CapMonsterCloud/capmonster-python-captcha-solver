@@ -86,7 +86,7 @@ client = CapMonsterClient(options=options)
 async def run_scraper():
     # Solve Turnstile challenge via CapMonster Cloud
     turnstile_req = TurnstileRequest(
-        websiteUrl="https://target-website.com/login",
+        websiteURL="https://target-website.com/login",
         websiteKey="0x4AAAAAAABnPIDnK2k_e-2"
     )
     solution = await client.solve_captcha(turnstile_req)

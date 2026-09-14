@@ -1,5 +1,5 @@
 from typing import Dict, Union, Optional
-from pydantic import Field
+from pydantic import Field, model_validator
 
 from .baseRequestWithProxy import BaseRequestWithProxy
 
@@ -22,6 +22,7 @@ class FuncaptchaRequest(BaseRequestWithProxy):
             provided as a string of key-value pairs.
         userAgent: Browser User-Agent to emulate. Pass only a current
             Windows OS UA.
+        proxy: Required. Your own proxy used to solve the task.
     """
     type: str = Field(default='FunCaptchaTask', description='The task type identifier, "FunCaptchaTask".')
     websiteUrl: str = Field(..., description='The URL of the webpage containing the FunCaptcha challenge.')
@@ -31,18 +32,23 @@ class FuncaptchaRequest(BaseRequestWithProxy):
     cookies: Optional[str] = Field(default=None, description='Cookies to be used when accessing the target webpage, provided as a string of key-value pairs.')
     userAgent: Optional[str] = Field(default=None, description='Browser User-Agent to emulate. Pass only a current Windows OS UA.')
 
+    @model_validator(mode='before')
+    def validate_funcaptcha_proxy(cls, values):
+        if values.get('proxy') is None:
+            raise RuntimeError(f'You are required to use your own proxies to solve FunCaptcha.')
+        return values
+
     def getTaskDict(self) -> Dict[str, Union[str, int, bool]]:
         task = {}
         task['type'] = self.type
         task['websiteURL'] = self.websiteUrl
         task['websitePublicKey'] = self.websitePublicKey
-        if self.proxy:
-            task['proxyType'] = self.proxy.proxyType
-            task['proxyAddress'] = self.proxy.proxyAddress
-            task['proxyPort'] = self.proxy.proxyPort
-            task['proxyLogin'] = self.proxy.proxyLogin
-            task['proxyPassword'] = self.proxy.proxyPassword
-        
+        task['proxyType'] = self.proxy.proxyType
+        task['proxyAddress'] = self.proxy.proxyAddress
+        task['proxyPort'] = self.proxy.proxyPort
+        task['proxyLogin'] = self.proxy.proxyLogin
+        task['proxyPassword'] = self.proxy.proxyPassword
+
         if self.funcaptchaApiJSSubdomain is not None:
             task['funcaptchaApiJSSubdomain'] = self.funcaptchaApiJSSubdomain
         if self.data is not None:
