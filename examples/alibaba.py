@@ -25,9 +25,6 @@ if __name__ == '__main__':
         "sceneId": "1ww7426c",
         "prefix": "dlw3kug",
         "apiGetLib": "https://o.example.com/captcha-frontend/aliyunCaptcha/AliyunCaptcha.js?t=2041",
-        # For websites that trigger verification through a separate "/punish" URL,
-        # pass only "punishUrl" (the full punish page URL) instead of sceneId/prefix:
-        # "punishUrl": "https://example.com/_____tmd_____/punish?x5secdata=...&x5step=2",
     }
     alibaba_request = AlibabaCustomTaskRequest(
         websiteUrl='https://www.example.com',
