@@ -193,7 +193,7 @@ class RequestGenerationTests(unittest.TestCase):
         )
 
     def test_fc(self):
-        noproxy_type = "FunCaptchaTask"
+        # FunCaptcha now requires the caller's own proxy; no-proxy requests must fail.
         default_keys = [
             "type",
             "websiteURL",
@@ -201,21 +201,13 @@ class RequestGenerationTests(unittest.TestCase):
             "websitePublicKey",
             "data",
         ]
-        request = requests.FuncaptchaRequest(
+        self.assertRaises(
+            RuntimeError,
+            requests.FuncaptchaRequest,
             websiteUrl="some_url",
             websitePublicKey="some_key",
             funcaptchaApiJSSubdomain="domain",
             data="asdfasdf",
-        )
-        task = request.getTaskDict()
-        for key in default_keys:
-            self.assertIsNotNone(
-                task.get(key), msg=f"Missing {key} for FunCaptchaTask request."
-            )
-        self.assertEqual(
-            noproxy_type,
-            task.get("type"),
-            msg=f"Task type of FunCaptchaTask not equal to {noproxy_type}",
         )
 
         proxy_type = "FunCaptchaTask"
@@ -243,7 +235,7 @@ class RequestGenerationTests(unittest.TestCase):
         self.assertEqual(
             proxy_type,
             proxy_task.get("type"),
-            msg=f"Task type of FunCaptchaTask not equal to {noproxy_type}",
+            msg=f"Task type of FunCaptchaTask not equal to {proxy_type}",
         )
 
     def test_hc(self):

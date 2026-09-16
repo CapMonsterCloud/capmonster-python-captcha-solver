@@ -2,7 +2,7 @@ import os
 import time
 import asyncio
 
-from capmonstercloudclient.requests import FuncaptchaRequest
+from capmonstercloudclient.requests import FuncaptchaRequest, ProxyInfo
 from capmonstercloudclient import ClientOptions, CapMonsterClient
 
 async def solve_captcha_sync(num_requests):
@@ -17,9 +17,18 @@ if __name__ == '__main__':
     key = os.getenv('API_KEY')
     client_options = ClientOptions(api_key=key)
     cap_monster_client = CapMonsterClient(options=client_options)
+    # FunCaptcha requires your own proxy.
+    proxy = ProxyInfo(
+        proxyType="http",
+        proxyAddress="8.8.8.8",
+        proxyPort=8080,
+        proxyLogin="proxyLoginHere",
+        proxyPassword="proxyPasswordHere"
+    )
     funcaptcha_request = FuncaptchaRequest(websiteUrl='https://example.com/',
                                                     websitePublicKey='websitePublicKey',
-                                                    funcaptchaApiJSSubdomain='funcaptchaApiJSSubdomain')
+                                                    funcaptchaApiJSSubdomain='funcaptchaApiJSSubdomain',
+                                                    proxy=proxy)
     
     nums = 3
 

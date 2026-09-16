@@ -5,7 +5,7 @@ from .CustomTaskRequestBase import CustomTaskRequestBase
 
 ALLOWED_METADATA_KEYS = {
     'sceneId', 'prefix', 'userId', 'userUserId', 'verifyType',
-    'region', 'UserCertifyId', 'apiGetLib', 'cookieRequired',
+    'region', 'UserCertifyId', 'apiGetLib', 'cookieRequired', 'punishUrl',
 }
 
 class AlibabaCustomTaskRequest(CustomTaskRequestBase):
@@ -15,29 +15,35 @@ class AlibabaCustomTaskRequest(CustomTaskRequestBase):
     Attributes:
         captchaClass: The constant string value identifying the captcha
             class as "alibaba".
-        metadata: A dictionary of Alibaba-specific parameters. Requires sceneId
-            and prefix; userId, userUserId, verifyType, region, UserCertifyId,
-            apiGetLib, and cookieRequired are optional, needed only for sites
-            that use them.
+        metadata: A dictionary of Alibaba-specific parameters. Standard mode
+            requires sceneId and prefix; userId, userUserId, verifyType, region,
+            UserCertifyId, apiGetLib, and cookieRequired are optional, needed
+            only for sites that use them. Alternatively, for websites that
+            trigger verification through a separate "/punish" URL, pass only
+            punishUrl (the full punish page URL) instead of sceneId/prefix.
     """
     captchaClass: str = Field(default='alibaba', description='The constant string value identifying the captcha class as "alibaba".')
-    metadata: Dict[str, Union[str, bool]] = Field(..., description='A dictionary of Alibaba-specific parameters. Requires sceneId and prefix; userId, userUserId, verifyType, region, UserCertifyId, apiGetLib, and cookieRequired are optional, needed only for sites that use them.')
+    metadata: Dict[str, Union[str, bool]] = Field(..., description='A dictionary of Alibaba-specific parameters. Requires sceneId and prefix, unless punishUrl is provided instead. userId, userUserId, verifyType, region, UserCertifyId, apiGetLib, and cookieRequired are optional, needed only for sites that use them.')
 
     @field_validator('metadata')
     @classmethod
     def validate_metadata(cls, value):
         if not set(value.keys()).issubset(ALLOWED_METADATA_KEYS):
             raise TypeError(f'Allowed keys for metadata are {sorted(ALLOWED_METADATA_KEYS)}')
-        if value.get('sceneId') is None:
-            raise TypeError(f'sceneId must be defined inside metadata.')
+        if value.get('punishUrl') is not None:
+            if not isinstance(value.get('punishUrl'), str):
+                raise TypeError(f'punishUrl must be str.')
         else:
-            if not isinstance(value.get('sceneId'), str):
-                raise TypeError(f'sceneId must be str.')
-        if value.get('prefix') is None:
-            raise TypeError(f'prefix must be defined inside metadata.')
-        else:
-            if not isinstance(value.get('prefix'), str):
-                raise TypeError(f'prefix must be str.')
+            if value.get('sceneId') is None:
+                raise TypeError(f'sceneId must be defined inside metadata (unless punishUrl is used).')
+            else:
+                if not isinstance(value.get('sceneId'), str):
+                    raise TypeError(f'sceneId must be str.')
+            if value.get('prefix') is None:
+                raise TypeError(f'prefix must be defined inside metadata (unless punishUrl is used).')
+            else:
+                if not isinstance(value.get('prefix'), str):
+                    raise TypeError(f'prefix must be str.')
         if value.get('cookieRequired') is not None and not isinstance(value.get('cookieRequired'), bool):
             raise TypeError(f'cookieRequired must be bool.')
         return value
