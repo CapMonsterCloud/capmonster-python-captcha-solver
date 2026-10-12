@@ -13,20 +13,25 @@ class TenDiCustomTaskRequest(CustomTaskRequestBase):
         websiteKey: The captchaAppId (the "aid" value, e.g. "189123456") for
             the target website, found in the page HTML or network traffic.
         metadata: Optional additional parameters for the task. Currently
-            supports the "captchaUrl" key, whose value must be a string.
+            supports the "captchaUrl" key and the "aidEncrypted" key, whose
+            values must be strings. "aidEncrypted" is the single-use Aid value
+            obtained from the target website before creating the task; pass it
+            only if the website uses Aid.
     """
     captchaClass: str = Field(default='TenDI', description='The identifier of the custom captcha class to solve.')
     websiteKey: str = Field(description='The captchaAppId (the "aid" value, e.g. "189123456") for the target website, found in the page HTML or network traffic.')
-    metadata: Optional[Dict[str, str]] = Field(default=None, description='Optional additional parameters for the task; supports the "captchaUrl" key with a string value.')
+    metadata: Optional[Dict[str, str]] = Field(default=None, description='Optional additional parameters for the task; supports the "captchaUrl" and "aidEncrypted" keys with string values.')
 
     @field_validator('metadata')
     @classmethod
     def validate_metadata(cls, value):
         if value is not None:
-            if not set(value.keys()).issubset(set(["captchaUrl"])):
-                raise TypeError(f'Allowed keys for metadata are "captchaUrl"')
+            if not set(value.keys()).issubset(set(["captchaUrl", "aidEncrypted"])):
+                raise TypeError(f'Allowed keys for metadata are "captchaUrl", "aidEncrypted"')
             if value.get('captchaUrl') is not None and not isinstance(value.get('captchaUrl'), str):
                 raise TypeError(f'captchaUrl must be str.')
+            if value.get('aidEncrypted') is not None and not isinstance(value.get('aidEncrypted'), str):
+                raise TypeError(f'aidEncrypted must be str.')
         return value
 
     def getTaskDict(self) -> Dict[str, Union[str, int, bool]]:
