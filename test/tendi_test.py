@@ -59,6 +59,36 @@ class TenDiCustomTaskRequestTest(unittest.TestCase):
         request_dict = request.getTaskDict()
         self.assertEqual(request_dict["metadata"]["captchaUrl"], "https://example.com/TCaptcha.js")
 
+    def testMetadataWithAidEncrypted(self):
+        request = TenDiCustomTaskRequest(
+            websiteUrl=TenDiCustomTaskRequestTest.websiteUrlExample,
+            websiteKey=TenDiCustomTaskRequestTest.websiteKeyExample,
+            metadata={
+                "captchaUrl": "https://example.com/TCaptcha.js",
+                "aidEncrypted": "YOUR_AID_ENCRYPTED",
+            },
+        )
+        request_dict = request.getTaskDict()
+        self.assertEqual(request_dict["metadata"]["aidEncrypted"], "YOUR_AID_ENCRYPTED")
+        self.assertEqual(request_dict["metadata"]["captchaUrl"], "https://example.com/TCaptcha.js")
+
+    def testMetadataAidEncryptedOnly(self):
+        request = TenDiCustomTaskRequest(
+            websiteUrl=TenDiCustomTaskRequestTest.websiteUrlExample,
+            websiteKey=TenDiCustomTaskRequestTest.websiteKeyExample,
+            metadata={"aidEncrypted": "YOUR_AID_ENCRYPTED"},
+        )
+        self.assertEqual(request.getTaskDict()["metadata"], {"aidEncrypted": "YOUR_AID_ENCRYPTED"})
+
+    def testMetadataAidEncryptedWrongType(self):
+        for bad_value in (123, True):
+            with self.assertRaises((TypeError, ValidationError)):
+                TenDiCustomTaskRequest(
+                    websiteUrl=TenDiCustomTaskRequestTest.websiteUrlExample,
+                    websiteKey=TenDiCustomTaskRequestTest.websiteKeyExample,
+                    metadata={"aidEncrypted": bad_value},
+                )
+
     def testMetadataInvalidKey(self):
         self.assertRaises(
             TypeError,
