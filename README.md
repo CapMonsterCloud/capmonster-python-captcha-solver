@@ -287,7 +287,11 @@ Register on CapMonster Cloud, top up your balance and copy your API key. The [Ge
 
 - [.NET](https://github.com/CapMonsterCloud/capmonster-dotnet-captcha-solver)
 - [Node.js](https://github.com/CapMonsterCloud/capmonster-nodejs-captcha-solver)
+- [Go](https://github.com/CapMonsterCloud/capmonster-go-captcha-solver)
+- [PHP](https://github.com/CapMonsterCloud/capmonster-php-captcha-solver)
+- [Rust](https://github.com/CapMonsterCloud/capmonster-rust-captcha-solver)
 - [n8n](https://github.com/CapMonsterCloud/capmonster-n8n-captcha-solver)
+- [MCP server](https://github.com/CapMonsterCloud/capmonster-mcp-captcha-solver)
 - [API Docs](https://github.com/CapMonsterCloud/capmonster-captcha-solver-docs)
 
 ---
