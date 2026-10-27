@@ -10,14 +10,14 @@ from setuptools import setup
 
 
 NAME = 'capmonstercloudclient'
-DESCRIPTION = 'Official CapMonsterCloud Client: https://capmonster.cloud/'
-EMAIL = 'andrey.ilyin@zennolab.com'
-AUTHOR = 'Andrey Ilyin'
+DESCRIPTION = 'Official CapMonster Cloud Python SDK: captcha solver & captcha bypass for reCAPTCHA, Cloudflare Turnstile, DataDome and GeeTest. A 2captcha and capsolver alternative.'
+EMAIL = 'support@capmonster.cloud'
+AUTHOR = 'CapMonster Cloud'
 with open('capmonstercloud_client/version.txt', 'r') as f:
     VERSION = f.read()
 with open("requirements.txt") as f:
     REQUIRED = [line.strip() for line in f if line.strip() and not line.startswith("#")]
-URL='https://github.com/ZennoLab/capmonstercloud-client-python'
+URL='https://github.com/CapMonsterCloud/capmonster-python-captcha-solver'
 
 this_directory = Path(__file__).parent
 long_description = (this_directory / "README.md").read_text(encoding="utf-8")
@@ -37,23 +37,33 @@ setup(
     include_package_data=True,
     py_modules=["capmonstercloudclient"],
     url=URL,
+    project_urls={
+        "Homepage": "https://capmonster.cloud/en/",
+        "Source": "https://github.com/CapMonsterCloud/capmonster-python-captcha-solver",
+        "Issues": "https://github.com/CapMonsterCloud/capmonster-python-captcha-solver/issues",
+        "Documentation": "https://docs.capmonster.cloud/",
+    },
     python_requires='>=3.6',
     install_requires=REQUIRED,
     keywords="""
-                captcha 
-				recaptcha
-				geetest
-				hcaptcha
-				funcaptcha
-				python3
-				python-library
-				capmonster
-                capmonstercloud
+                capmonster
+                capmonster-cloud
                 capmonstercloudclient
+                captcha
+                captcha-solver
+                captcha-bypass
+                recaptcha
+                cloudflare-turnstile
+                geetest
+                datadome
+                web-scraping
+                python3
+                2captcha-alternative
+                capsolver-alternative
                """,
-    license="AGPL-3.0",
+    license="MIT",
     classifiers=[
-        "License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)",
+        "License :: OSI Approved :: MIT License",
         "Programming Language :: Python",
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3 :: Only",
