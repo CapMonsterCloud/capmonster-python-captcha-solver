@@ -17,4 +17,4 @@ def parseVersion(versionFile: str = getDefaultVersionPath(),
     else:
         with open(versionFile, 'r') as f:
             version = f.read()
-        return version
+        return version.strip()
