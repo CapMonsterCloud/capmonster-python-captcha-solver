@@ -1,5 +1,5 @@
 from typing import Dict, Union, Optional
-from pydantic import Field
+from pydantic import Field, field_validator
 
 from .baseRequestWithProxy import BaseRequestWithProxy
 
@@ -22,6 +22,8 @@ class RecaptchaV2EnterpriseRequest(BaseRequestWithProxy):
             domain.
         pageAction: The action name configured for the reCAPTCHA Enterprise
             challenge on the target website.
+        minScore: The minimum acceptable score for the token, in the range
+            0.1-0.9.
         recaptchaDataSValue: The one-time token from the widget's "data-s"
             parameter, if present on the page.
         userAgent: The User-Agent string of the browser that should be
@@ -35,11 +37,21 @@ class RecaptchaV2EnterpriseRequest(BaseRequestWithProxy):
     enterprisePayload: Optional[str] = Field(default=None, description='Additional parameters passed to the reCAPTCHA Enterprise widget, such as a custom "s" value used by some implementations.')
     apiDomain: Optional[str] = Field(default=None, description='The domain to load the reCAPTCHA API from, used when the challenge is served from a domain other than the default Google domain.')
     pageAction: Optional[str] = Field(default=None, description='The action name configured for the reCAPTCHA Enterprise challenge on the target website.')
+    minScore: Optional[float] = Field(default=None, description='Minimum acceptable score for the token, in the range 0.1-0.9.')
     recaptchaDataSValue: Optional[str] = Field(default=None, description='The one-time token from the widget\'s "data-s" parameter, if present on the page.')
     userAgent: Optional[str] = Field(default=None, description='The User-Agent string of the browser that should be emulated while solving the challenge.')
     cookies: Optional[str] = Field(default=None, description='Cookies to be sent along with the request when solving the challenge.')
 
-    def getTaskDict(self) -> Dict[str, Union[str, int]]:
+    @field_validator('minScore')
+    @classmethod
+    def validate_min_score(cls, value):
+        if value is not None:
+            if not 0.1 <= value <= 0.9:
+                raise ValueError(f'Minimum score value should be found in interval 0.1 - 0.9, ' \
+                                 f'current "{value}".')
+        return value
+
+    def getTaskDict(self) -> Dict[str, Union[str, int, float]]:
         task = {}
         task['type'] = self.type
         task['websiteURL'] = self.websiteUrl
@@ -56,6 +68,8 @@ class RecaptchaV2EnterpriseRequest(BaseRequestWithProxy):
             task['apiDomain'] = self.apiDomain
         if self.pageAction is not None:
             task['pageAction'] = self.pageAction
+        if self.minScore is not None:
+            task['minScore'] = self.minScore
         if self.recaptchaDataSValue is not None:
             task['recaptchaDataSValue'] = self.recaptchaDataSValue
         if self.userAgent is not None:
