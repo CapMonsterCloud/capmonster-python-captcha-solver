@@ -217,15 +217,18 @@ All task types follow the official [CapMonster Cloud API documentation](https://
 | :--- | :--- | :---: |
 | **Cloudflare Turnstile** | `TurnstileRequest` | ✅ Supported |
 | **reCAPTCHA v2** | `RecaptchaV2Request` | ✅ Supported |
+| **reCAPTCHA v2 Enterprise** | `RecaptchaV2EnterpriseRequest` (optional `minScore`, 0.1–0.9) | ✅ Supported |
 | **reCAPTCHA v3** | `RecaptchaV3ProxylessRequest` | ✅ Supported |
-| **reCAPTCHA Enterprise** | `RecaptchaV2EnterpriseProxylessRequest` / `RecaptchaV2EnterpriseRequest` | ✅ Supported |
-| **GeeTest (v3, v4)** | `GeeTestProxylessRequest` / `GeeTestRequest` | ✅ Supported |
+| **reCAPTCHA v3 Enterprise** | `RecaptchaV3EnterpriseRequest` | ✅ Supported |
+| **GeeTest (v3, v4)** | `GeetestRequest` | ✅ Supported |
+| **FunCaptcha** | `FuncaptchaRequest` | ✅ Supported |
 | **Amazon WAF** | `AmazonWafRequest` | ✅ Supported |
 | **DataDome** | `DataDomeCustomTaskRequest` | 🌐 Proxy Required |
-| **Imperva / Incapsula** | `ImpervaCustomTaskRequest` / `ImpervaCustomTaskProxylessRequest` | ✅ Supported |
-| **Binance CAPTCHA** | `BinanceTaskRequest` / `BinanceTaskProxylessRequest` | ✅ Supported |
+| **Imperva / Incapsula** | `ImpervaCustomTaskRequest` | ✅ Supported |
+| **Binance CAPTCHA** | `BinanceTaskRequest` | ✅ Supported |
 | **Standard Text CAPTCHA** | `ImageToTextRequest` | ✅ Supported |
-| **Complex Image Tasks** | `RecaptchaComplexImageTaskRequest` | ✅ Supported |
+| **Complex Image Tasks** | `RecaptchaComplexImageTaskRequest`, `RecognitionComplexImageTaskRequest` | ✅ Supported |
+| **Custom anti-bot tasks** | `TspdCustomTaskRequest`, `HuntCustomTaskRequest`, `FriendlyCustomTaskRequest`, `TenDiCustomTaskRequest`, `BasiliskCustomTaskRequest`, `AlibabaCustomTaskRequest`, `AltchaCustomTaskRequest`, `MTCaptchaRequest`, `YidunRequest`, `ProsopoTaskRequest` | ✅ Supported |
 
 ---
 
