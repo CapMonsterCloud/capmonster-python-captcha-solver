@@ -85,3 +85,15 @@ def getProsopoTimeouts() -> GetResultTimeouts:
 
 def getTemuTimeouts() -> GetResultTimeouts:
     return GetResultTimeouts(1, 10, 3, 180)
+
+def getFengkongCloudTimeouts() -> GetResultTimeouts:
+    return GetResultTimeouts(1, 10, 3, 180)
+
+def getArCaptchaTimeouts() -> GetResultTimeouts:
+    return GetResultTimeouts(1, 10, 3, 180)
+
+def getHeyTapTimeouts() -> GetResultTimeouts:
+    return GetResultTimeouts(1, 10, 3, 180)
+
+def getProtonTimeouts() -> GetResultTimeouts:
+    return GetResultTimeouts(1, 10, 3, 180)

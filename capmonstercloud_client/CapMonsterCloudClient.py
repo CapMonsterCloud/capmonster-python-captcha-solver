@@ -42,6 +42,10 @@ _instance_config = (
     ((HuntCustomTaskRequest,), getHuntTimeouts),
     ((AlibabaCustomTaskRequest,), getAlibabaTimeouts),
     ((FriendlyCustomTaskRequest,), getFriendlyTimeouts),
+    ((FengkongCloudCustomTaskRequest,), getFengkongCloudTimeouts),
+    ((ArCaptchaRequest,), getArCaptchaTimeouts),
+    ((HeyTapCustomTaskRequest,), getHeyTapTimeouts),
+    ((ProtonCustomTaskRequest,), getProtonTimeouts),
 )
 
 
@@ -110,7 +114,11 @@ class CapMonsterClient:
                                                  TspdCustomTaskRequest,
                                                  HuntCustomTaskRequest,
                                                  AlibabaCustomTaskRequest,
-                                                 FriendlyCustomTaskRequest],
+                                                 FriendlyCustomTaskRequest,
+                                                 FengkongCloudCustomTaskRequest,
+                                                 ArCaptchaRequest,
+                                                 HeyTapCustomTaskRequest,
+                                                 ProtonCustomTaskRequest],
                             ) -> Dict[str, str]:
         '''
         Non-blocking method for captcha solving. 
@@ -154,7 +162,11 @@ class CapMonsterClient:
                                           TspdCustomTaskRequest,
                                           HuntCustomTaskRequest,
                                           AlibabaCustomTaskRequest,
-                                          FriendlyCustomTaskRequest],
+                                          FriendlyCustomTaskRequest,
+                                          FengkongCloudCustomTaskRequest,
+                                          ArCaptchaRequest,
+                                          HeyTapCustomTaskRequest,
+                                          ProtonCustomTaskRequest],
                            timeouts: GetResultTimeouts,
                            ) -> Dict[str, str]:
 

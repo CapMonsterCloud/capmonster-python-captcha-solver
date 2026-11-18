@@ -29,6 +29,10 @@ from .TspdCustomTaskRequest import TspdCustomTaskRequest
 from .HuntCustomTaskRequest import HuntCustomTaskRequest
 from .AlibabaCustomTaskRequest import AlibabaCustomTaskRequest
 from .FriendlyCustomTaskRequest import FriendlyCustomTaskRequest
+from .FengkongCloudCustomTaskRequest import FengkongCloudCustomTaskRequest
+from .ArCaptchaRequest import ArCaptchaRequest
+from .HeyTapCustomTaskRequest import HeyTapCustomTaskRequest
+from .ProtonCustomTaskRequest import ProtonCustomTaskRequest
 from .proxy_info import ProxyInfo, ClientProxyInfo
 
 
@@ -54,5 +58,9 @@ REQUESTS = ['RecaptchaV2EnterpiseRequest', 'RecaptchaV2Request', 'RecaptchaV3Pro
             'TspdCustomTaskRequest',
             'HuntCustomTaskRequest',
             'AlibabaCustomTaskRequest',
-            'FriendlyCustomTaskRequest'
+            'FriendlyCustomTaskRequest',
+            'FengkongCloudCustomTaskRequest',
+            'ArCaptchaRequest',
+            'HeyTapCustomTaskRequest',
+            'ProtonCustomTaskRequest'
             ]
