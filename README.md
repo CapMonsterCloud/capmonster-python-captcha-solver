@@ -270,7 +270,7 @@ All task types follow the official [CapMonster Cloud API documentation](https://
 | **Imperva / Incapsula** | `ImpervaCustomTaskRequest` | ✅ Supported |
 | **Binance CAPTCHA** | `BinanceTaskRequest` | ✅ Supported |
 | **Standard Text CAPTCHA** | `ImageToTextRequest` | ✅ Supported |
-| **Complex Image Tasks** | `RecaptchaComplexImageTaskRequest`, `RecognitionComplexImageTaskRequest` | ✅ Supported |
+| **Complex Image Tasks** | `RecaptchaComplexImageTaskRequest`, `RecognitionComplexImageTaskRequest`, `FunCaptchaComplexImageTaskRequest` | ✅ Supported |
 | **Custom anti-bot tasks** | `TspdCustomTaskRequest`, `HuntCustomTaskRequest`, `FriendlyCustomTaskRequest`, `TenDiCustomTaskRequest`, `BasiliskCustomTaskRequest`, `AlibabaCustomTaskRequest`, `AltchaCustomTaskRequest`, `MTCaptchaRequest`, `YidunRequest`, `ProsopoTaskRequest` | ✅ Supported |
 
 ---
