@@ -144,6 +144,49 @@ if __name__ == "__main__":
     asyncio.run(run_scraper())
 ```
 
+### 3. Check your balance
+
+`get_balance()` returns the raw `getBalance` API response, including your current balance in USD:
+
+```python
+async def main():
+    balance = await client.get_balance()
+    print("Balance:", balance.get("balance"))
+
+if __name__ == "__main__":
+    asyncio.run(main())
+```
+
+---
+
+## 🔧 Client Configuration
+
+`ClientOptions` controls how the client connects to the CapMonster Cloud API:
+
+| Option | Default | Description |
+| :--- | :--- | :--- |
+| `api_key` | — | **Required.** Your CapMonster Cloud API key from the [Dashboard](https://dash.capmonster.cloud/?utm_source=github&utm_medium=referral&utm_campaign=python_repo_readme). |
+| `service_url` | `https://api.capmonster.cloud` | CapMonster Cloud API endpoint. |
+| `client_timeout` | `20.0` | Timeout in seconds for a single HTTP request to the API. |
+| `default_soft_id` | `55` | `softId` sent with every created task; identifies your software in the Dashboard. |
+| `client_proxy` | `None` | Proxy for the connection to the CapMonster Cloud API itself: `ClientProxyInfo` with `proxyType` (`http` or `https`), `proxyAddress`, `proxyPort` and optional `proxyLogin` / `proxyPassword`. To route a solved task through a proxy, set `proxy` on the request object instead. |
+
+```python
+from capmonstercloudclient import CapMonsterClient, ClientOptions
+from capmonstercloudclient.requests import ClientProxyInfo
+
+options = ClientOptions(
+    api_key="YOUR_CAPMONSTER_API_KEY",
+    client_timeout=30.0,
+    client_proxy=ClientProxyInfo(
+        proxyType="http",
+        proxyAddress="127.0.0.1",
+        proxyPort=8080,
+    ),
+)
+client = CapMonsterClient(options=options)
+```
+
 ---
 
 ## 🔄 Migrating from 2Captcha or Capsolver
