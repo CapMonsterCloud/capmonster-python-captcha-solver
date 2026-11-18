@@ -295,6 +295,36 @@ All task types follow the official [CapMonster Cloud API documentation](https://
 
 ---
 
+## 🐞 Error Handling
+
+Failed calls raise exceptions from `capmonstercloudclient.exceptions` (all subclass `BaseError`):
+
+| Exception | Raised when |
+| :--- | :--- |
+| `GetTaskError` | `createTask` returned an API error (`errorId != 0`): zero balance, invalid task, and similar. |
+| `GetResultError` | `getTaskResult` returned an API error while polling. |
+| `GetBalanceError` | `get_balance()` returned an API error. |
+| `UnknownRequestInstanceError` | `solve_captcha()` received an object that is not a supported request class. |
+| `UnsupportedProxyTypeError` | `client_proxy` uses a protocol other than `http` / `https`. |
+| `TimeoutError` (builtin) | No solution arrived within the maximum waiting time for that captcha type. |
+| `HTTPException` (`http.client`) | The API answered with a non-200 HTTP status. |
+| `TaskNotDefinedError`, `NumbersImagesErrors`, `ZeroImagesErrors`, `ExtraParamsError`, `UserAgentNotDefinedError` | Request validation failed (mostly complex image tasks): wrong number of images, missing task parameters or `userAgent`, and similar. |
+
+```python
+from capmonstercloudclient.exceptions import GetTaskError, GetResultError
+
+try:
+    solution = await client.solve_captcha(request)
+except GetTaskError as e:
+    print("Task rejected:", e)   # e.g. ERROR_ZERO_BALANCE
+except TimeoutError as e:
+    print("No solution in time:", e)
+```
+
+**Polling and timeouts.** The client polls `getTaskResult` automatically. Each captcha type has its own polling settings (delay before the first request, polling interval, maximum waiting time) — for example up to 180 seconds for reCAPTCHA tasks and 10 seconds for image-to-text tasks. When the time is up, `solve_captcha()` raises `TimeoutError`. Unsolved tasks are not charged.
+
+---
+
 ## ⚙️ Best Practices
 
 - **Use tokens promptly:** CAPTCHA tokens expire quickly (a reCAPTCHA v2 token is valid for 60 seconds after solving), so submit or inject the solution immediately after receiving the response.
