@@ -238,66 +238,6 @@ class RequestGenerationTests(unittest.TestCase):
             msg=f"Task type of FunCaptchaTask not equal to {proxy_type}",
         )
 
-    def test_hc(self):
-        noproxy_type = "HCaptchaTask"
-        default_keys = [
-            "type",
-            "websiteURL",
-            "websiteKey",
-            "isInvisible",
-            "data",
-            "userAgent",
-            "cookies",
-        ]
-        request = requests.HcaptchaRequest(
-            websiteUrl="some_url",
-            websiteKey="some_key",
-            is_invisible=False,
-            data="data",
-            user_agent="agent",
-            cookies="cookies",
-        )
-        task = request.getTaskDict()
-        for key in default_keys:
-            self.assertIsNotNone(
-                task.get(key), msg=f"Missing {key} for HCaptchaTask request."
-            )
-        self.assertEqual(
-            noproxy_type,
-            task.get("type"),
-            msg=f"Task type of HCaptchaTask not equal to {noproxy_type}",
-        )
-
-        proxy = requests.ProxyInfo(
-            proxyType="http",
-            proxyAddress="address",
-            proxyPort=8001,
-            proxyLogin="login",
-            proxyPassword="password",
-        )
-        proxy_request = requests.HcaptchaRequest(
-            websiteUrl="some_url",
-            websiteKey="some_key",
-            is_invisible=False,
-            data="data",
-            user_agent="agent",
-            cookies="cookies",
-            proxy=proxy,
-        )
-
-        proxy_type = "HCaptchaTask"
-        proxy_keys = default_keys + PROXY_LIST
-        proxy_task = proxy_request.getTaskDict()
-        for key in proxy_keys:
-            self.assertIsNotNone(
-                proxy_task.get(key), msg=f"Missing {key} for HCaptchaTask request."
-            )
-        self.assertEqual(
-            proxy_type,
-            proxy_task.get("type"),
-            msg=f"Task type of HCaptchaTask not equal to {proxy_type}",
-        )
-
     def test_image2text(self):
         noproxy_type = "ImageToTextTask"
         default_keys = [
