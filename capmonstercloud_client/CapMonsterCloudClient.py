@@ -193,6 +193,9 @@ class CapMonsterClient:
             elif getResultResponse.get('status') == 'ready':
                 timer.stop()
                 result.solution = getResultResponse.get('solution')
+                result.cost = getResultResponse.get('cost')
+                if result.cost is not None and result.solution is not None:
+                    return {**result.solution, 'cost': result.cost}
                 return result.solution
 
         raise TimeoutError('Failed to get a solution within the maximum ' \
