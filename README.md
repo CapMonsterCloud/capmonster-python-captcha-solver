@@ -105,6 +105,7 @@ async def main():
     # Send task and receive token
     result = await client.solve_captcha(request)
     print("reCAPTCHA Token:", result.get("gRecaptchaResponse"))
+    print("Cost:", result.get("cost"))  # price of this solution in USD
 
 if __name__ == "__main__":
     asyncio.run(main())
@@ -321,7 +322,7 @@ except TimeoutError as e:
     print("No solution in time:", e)
 ```
 
-**Polling and timeouts.** The client polls `getTaskResult` automatically. Each captcha type has its own polling settings (delay before the first request, polling interval, maximum waiting time) — for example up to 180 seconds for reCAPTCHA tasks and 10 seconds for image-to-text tasks. When the time is up, `solve_captcha()` raises `TimeoutError`. Unsolved tasks are not charged.
+**Polling and timeouts.** The client polls `getTaskResult` automatically. Each captcha type has its own polling settings (delay before the first request, polling interval, maximum waiting time) — for example up to 180 seconds for reCAPTCHA tasks and 10 seconds for image-to-text tasks. When the time is up, `solve_captcha()` raises `TimeoutError`. When a task is solved, the returned dictionary also contains `cost` — the price of this solution in USD. Unsolved tasks are not charged.
 
 ---
 
