@@ -105,6 +105,7 @@ async def main():
     # Send task and receive token
     result = await client.solve_captcha(request)
     print("reCAPTCHA Token:", result.get("gRecaptchaResponse"))
+    print("Cost:", result.get("cost"))  # price of this solution in USD
 
 if __name__ == "__main__":
     asyncio.run(main())
@@ -142,6 +143,49 @@ async def run_scraper():
 
 if __name__ == "__main__":
     asyncio.run(run_scraper())
+```
+
+### 3. Check your balance
+
+`get_balance()` returns the raw `getBalance` API response, including your current balance in USD:
+
+```python
+async def main():
+    balance = await client.get_balance()
+    print("Balance:", balance.get("balance"))
+
+if __name__ == "__main__":
+    asyncio.run(main())
+```
+
+---
+
+## 🔧 Client Configuration
+
+`ClientOptions` controls how the client connects to the CapMonster Cloud API:
+
+| Option | Default | Description |
+| :--- | :--- | :--- |
+| `api_key` | — | **Required.** Your CapMonster Cloud API key from the [Dashboard](https://dash.capmonster.cloud/?utm_source=github&utm_medium=referral&utm_campaign=python_repo_readme). |
+| `service_url` | `https://api.capmonster.cloud` | CapMonster Cloud API endpoint. |
+| `client_timeout` | `20.0` | Timeout in seconds for a single HTTP request to the API. |
+| `default_soft_id` | `55` | `softId` sent with every created task; identifies your software in the Dashboard. |
+| `client_proxy` | `None` | Proxy for the connection to the CapMonster Cloud API itself: `ClientProxyInfo` with `proxyType` (`http` or `https`), `proxyAddress`, `proxyPort` and optional `proxyLogin` / `proxyPassword`. To route a solved task through a proxy, set `proxy` on the request object instead. |
+
+```python
+from capmonstercloudclient import CapMonsterClient, ClientOptions
+from capmonstercloudclient.requests import ClientProxyInfo
+
+options = ClientOptions(
+    api_key="YOUR_CAPMONSTER_API_KEY",
+    client_timeout=30.0,
+    client_proxy=ClientProxyInfo(
+        proxyType="http",
+        proxyAddress="127.0.0.1",
+        proxyPort=8080,
+    ),
+)
+client = CapMonsterClient(options=options)
 ```
 
 ---
@@ -217,15 +261,18 @@ All task types follow the official [CapMonster Cloud API documentation](https://
 | :--- | :--- | :---: |
 | **Cloudflare Turnstile** | `TurnstileRequest` | ✅ Supported |
 | **reCAPTCHA v2** | `RecaptchaV2Request` | ✅ Supported |
+| **reCAPTCHA v2 Enterprise** | `RecaptchaV2EnterpriseRequest` (optional `minScore`, 0.1–0.9) | ✅ Supported |
 | **reCAPTCHA v3** | `RecaptchaV3ProxylessRequest` | ✅ Supported |
-| **reCAPTCHA Enterprise** | `RecaptchaV2EnterpriseProxylessRequest` / `RecaptchaV2EnterpriseRequest` | ✅ Supported |
-| **GeeTest (v3, v4)** | `GeeTestProxylessRequest` / `GeeTestRequest` | ✅ Supported |
+| **reCAPTCHA v3 Enterprise** | `RecaptchaV3EnterpriseRequest` | ✅ Supported |
+| **GeeTest (v3, v4)** | `GeetestRequest` | ✅ Supported |
+| **FunCaptcha** | `FuncaptchaRequest` | ✅ Supported |
 | **Amazon WAF** | `AmazonWafRequest` | ✅ Supported |
 | **DataDome** | `DataDomeCustomTaskRequest` | 🌐 Proxy Required |
-| **Imperva / Incapsula** | `ImpervaCustomTaskRequest` / `ImpervaCustomTaskProxylessRequest` | ✅ Supported |
-| **Binance CAPTCHA** | `BinanceTaskRequest` / `BinanceTaskProxylessRequest` | ✅ Supported |
+| **Imperva / Incapsula** | `ImpervaCustomTaskRequest` | ✅ Supported |
+| **Binance CAPTCHA** | `BinanceTaskRequest` | ✅ Supported |
 | **Standard Text CAPTCHA** | `ImageToTextRequest` | ✅ Supported |
-| **Complex Image Tasks** | `RecaptchaComplexImageTaskRequest` | ✅ Supported |
+| **Complex Image Tasks** | `RecaptchaComplexImageTaskRequest`, `RecognitionComplexImageTaskRequest`, `FunCaptchaComplexImageTaskRequest` | ✅ Supported |
+| **Custom anti-bot tasks** | `TspdCustomTaskRequest`, `HuntCustomTaskRequest`, `FriendlyCustomTaskRequest`, `TenDiCustomTaskRequest`, `BasiliskCustomTaskRequest`, `AlibabaCustomTaskRequest`, `AltchaCustomTaskRequest`, `MTCaptchaRequest`, `YidunRequest`, `ProsopoTaskRequest` | ✅ Supported |
 
 ---
 
@@ -246,6 +293,36 @@ All task types follow the official [CapMonster Cloud API documentation](https://
          ▼
 [ Receive Token & Autosubmit ] ──► Complete bypass
 ```
+
+---
+
+## 🐞 Error Handling
+
+Failed calls raise exceptions from `capmonstercloudclient.exceptions` (all subclass `BaseError`):
+
+| Exception | Raised when |
+| :--- | :--- |
+| `GetTaskError` | `createTask` returned an API error (`errorId != 0`): zero balance, invalid task, and similar. |
+| `GetResultError` | `getTaskResult` returned an API error while polling. |
+| `GetBalanceError` | `get_balance()` returned an API error. |
+| `UnknownRequestInstanceError` | `solve_captcha()` received an object that is not a supported request class. |
+| `UnsupportedProxyTypeError` | `client_proxy` uses a protocol other than `http` / `https`. |
+| `TimeoutError` (builtin) | No solution arrived within the maximum waiting time for that captcha type. |
+| `HTTPException` (`http.client`) | The API answered with a non-200 HTTP status. |
+| `TaskNotDefinedError`, `NumbersImagesErrors`, `ZeroImagesErrors`, `ExtraParamsError`, `UserAgentNotDefinedError` | Request validation failed (mostly complex image tasks): wrong number of images, missing task parameters or `userAgent`, and similar. |
+
+```python
+from capmonstercloudclient.exceptions import GetTaskError, GetResultError
+
+try:
+    solution = await client.solve_captcha(request)
+except GetTaskError as e:
+    print("Task rejected:", e)   # e.g. ERROR_ZERO_BALANCE
+except TimeoutError as e:
+    print("No solution in time:", e)
+```
+
+**Polling and timeouts.** The client polls `getTaskResult` automatically. Each captcha type has its own polling settings (delay before the first request, polling interval, maximum waiting time) — for example up to 180 seconds for reCAPTCHA tasks and 10 seconds for image-to-text tasks. When the time is up, `solve_captcha()` raises `TimeoutError`. When a task is solved, the returned dictionary also contains `cost` — the price of this solution in USD. Unsolved tasks are not charged.
 
 ---
 

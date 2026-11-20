@@ -26,9 +26,6 @@ def getImage2TextTimeouts() -> GetResultTimeouts:
 def getFuncaptchaTimeouts() -> GetResultTimeouts:
     return GetResultTimeouts(1, 10, 1, 80)
 
-def getHcaptchaTimeouts() -> GetResultTimeouts:
-    return GetResultTimeouts(1, 10, 3, 180)
-
 def getGeetestTimeouts() -> GetResultTimeouts:
     return GetResultTimeouts(1, 0, 1, 80)
 
@@ -56,9 +53,6 @@ def getImpervaTimeouts() -> GetResultTimeouts:
 def getAltchaTimeouts() -> GetResultTimeouts:
     return GetResultTimeouts(1, 0, 1, 50)
 
-def getCastleTimeouts() -> GetResultTimeouts:
-    return GetResultTimeouts(1, 0, 1, 60)
-
 def getTspdTimeouts() -> GetResultTimeouts:
     return GetResultTimeouts(1, 0, 1, 60)
 
@@ -81,9 +75,6 @@ def getYidunTimeouts() -> GetResultTimeouts:
     return GetResultTimeouts(1, 10, 3, 180)
 
 def getProsopoTimeouts() -> GetResultTimeouts:
-    return GetResultTimeouts(1, 10, 3, 180)
-
-def getTemuTimeouts() -> GetResultTimeouts:
     return GetResultTimeouts(1, 10, 3, 180)
 
 def getFengkongCloudTimeouts() -> GetResultTimeouts:
