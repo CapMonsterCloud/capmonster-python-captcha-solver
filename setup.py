@@ -10,7 +10,7 @@ from setuptools import setup
 
 
 NAME = 'capmonstercloudclient'
-DESCRIPTION = 'Official CapMonster Cloud Python SDK: captcha solver & captcha bypass for reCAPTCHA, Cloudflare Turnstile, DataDome and GeeTest. A 2captcha and capsolver alternative.'
+DESCRIPTION = 'Official CapMonster Cloud Python SDK: captcha solver & captcha bypass for reCAPTCHA v2/v3/Enterprise, Cloudflare Turnstile, DataDome, GeeTest, Amazon WAF, FunCaptcha and 20+ captcha types. A 2captcha and capsolver alternative.'
 EMAIL = 'support@capmonster.cloud'
 AUTHOR = 'CapMonster Cloud'
 with open('capmonstercloud_client/version.txt', 'r') as f:
@@ -56,6 +56,10 @@ setup(
                 cloudflare-turnstile
                 geetest
                 datadome
+                amazon-waf
+                funcaptcha
+                imperva
+                binance
                 web-scraping
                 python3
                 2captcha-alternative
